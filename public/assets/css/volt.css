@@ -12409,7 +12409,7 @@ textarea.form-control-lg {
 .text-secondary-bold {
     --bs-text-opacity: 1;
     color: rgba(var(--bs-secondary-rgb), var(--bs-text-opacity)) !important;
-    font-weight: bold;
+    font-weight: bold !important;
 }
 
 .text-tertiary {
@@ -12445,7 +12445,7 @@ textarea.form-control-lg {
 .text-white-bold {
     --bs-text-opacity: 1;
     color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
-    font-weight: bold;
+    font-weight: bold !important;
 }
 
 .text-white-bold:hover {
