@@ -7,32 +7,37 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 </ul>
-                    <a class="text-white-bold" href="https://lspedukia.id/">EDUKIA</a>
+                    <a class="text-white" href="https://lspedukia.id/"><b>BERANDA</b></a>
             </div>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 </ul>
-                    <a class="text-white-bold" href="https://lspedukia.id/">TENTANG KAMI</a>
+                    <a class="text-white" href="https://lspedukia.id/"><b>TENTANG KAMI</b></a>
             </div>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 </ul>
-                    <a class="text-white-bold" href="https://lspedukia.id/">SERTIFIKASI</a>
+                    <a class="text-white" href="https://lspedukia.id/"><b>SKEMA SERTIFIKASI</b></a>
             </div>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 </ul>
-                    <a class="text-secondary-bold" href="/">VALIDASI SERTIFIKAT</a>
+                    <a class="text-white" href="https://lspedukia.id/"><b>INFORMASI PUBLIK</b></a>
+            </div>
+            <!-- <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                </ul>
+                    <a class="text-secondary" href="/"><b>DAFTAR PEMEGANG SERTIFIKAT</b></a>
+            </div> -->
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                </ul>
+                    <a class="text-white" href="https://lspedukia.id/"><b>BLOG</b></a>
             </div>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 </ul>
-                    <a class="text-white-bold" href="https://lspedukia.id/">BERITA</a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                </ul>
-                    <a class="text-white-bold" href="https://lspedukia.id/">KONTAK KAMI</a>
+                    <a class="text-white" href="https://lspedukia.id/"><b>KONTAK KAMI</b></a>
             </div>
         </div>
     </nav>
