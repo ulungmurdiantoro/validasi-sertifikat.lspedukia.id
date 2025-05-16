@@ -30,4 +30,13 @@ class SertifController extends Controller
         ]);
     }
 
+    public function show_sk($no_sk)
+    {
+        $penerimask = PenerimaSertif::where('no_sk', $no_sk)->firstOrFail();
+
+        return inertia('Student/Login/Show_Sk', [
+            'penerimask' => $penerimask,
+        ]);
+    }
+
 }

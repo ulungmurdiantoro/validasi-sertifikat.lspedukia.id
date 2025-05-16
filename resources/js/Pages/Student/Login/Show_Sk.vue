@@ -4,7 +4,7 @@
   </Head>
   <div class="container-fluid">
     <transition name="fade" mode="out-in">
-      <template v-if="!penerimasertif">
+      <template v-if="!penerimask">
         <div class="error-state alert alert-danger text-center" role="alert">
           Maaf, data sertifikat tidak ditemukan.
         </div>
@@ -12,44 +12,39 @@
       <template v-else>
         <div class="certificate-card card shadow-sm mx-auto">
           <div class="card-header bg-primary text-white text-center">
-            <h3 class="mb-0">Sertifikat {{ penerimasertif.skema }}</h3>
+            <h3 class="mb-0">VALIDASI DOKUMEN ELEKTRONIK</h3>
           </div>
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-bordered">
                 <tbody>
                   <tr>
-                    <th>No Sertifikat</th>
-                    <td>{{ penerimasertif.no_sertif }}</td>
+                    <th>Jenis Dokumen</th>
+                    <td>SURAT KEPUTUSAN (SK).</td>
                   </tr>
                   <tr>
-                    <th>Nama Lengkap</th>
-                    <td>{{ penerimasertif.nama_lengkap }}</td>
+                    <th>No Dokumen</th>
+                    <td><b>{{ penerimask.no_sk }}</b></td>
                   </tr>
                   <tr>
-                    <th>Tanggal Sertifikat</th>
-                    <td>{{ penerimasertif.tgl_rilis }}</td>
+                    <th>Tanggal Dokumen</th>
+                    <td>{{ penerimask.tgl_rilis }}</td>
                   </tr>
                   <tr>
-                    <th>Berlaku sampai</th>
-                    <td>{{ penerimasertif.tgl_berakhir }}</td>
+                    <th>Proses  Pelaksanaan</th>
+                    <td>{{ penerimask.skema }} Batch {{ penerimask.batch }}</td>
                   </tr>
-                  <!-- <tr>
-                    <th>Instansi / Perguruan Tinggi</th>
-                    <td>{{ penerimasertif.instansi }}</td>
-                  </tr> -->
                   <tr>
-                    <th>Status Sertifikat</th>
-                    <td>
-                      <span
-                        :class="{
-                          'text-success': penerimasertif.tgl_rilis < penerimasertif.tgl_berakhir,
-                          'text-danger': !(penerimasertif.tgl_rilis < penerimasertif.tgl_berakhir)
-                        }"
-                      >
-                        <b>{{ penerimasertif.tgl_rilis < penerimasertif.tgl_berakhir ? 'AKTIF' : 'EXPIRED' }}</b>
-                      </span>
-                    </td>
+                    <th>Nama Penanggung Jawab</th>
+                    <td>Agung Yulianto, M.Si</td>
+                  </tr>
+                  <tr>
+                    <th>Instansi</th>
+                    <td>LSP Edukasi Global Cendekia</td>
+                  </tr>
+                  <tr>
+                    <th>Jabatan</th>
+                    <td><b>Ketua LSP</b></td>
                   </tr>
                 </tbody>
               </table>
@@ -69,7 +64,7 @@ export default {
   layout: LayoutStudent,
   components: { Head },
   props: {
-    penerimasertif: {
+    penerimask: {
       type: Object,
       required: false,
       default: null,
