@@ -17,10 +17,12 @@ class PenerimaSertif extends Model
     protected $fillable = [
         'nama_lengkap',
         'skema',
+        'batch',
         'no_skema',
         'no_sertif',
+        'no_sk',
         'nama_gelar',
         'tgl_rilis',
-        'tgl_rilis',
+        'tgl_berakhir',
     ];
 }

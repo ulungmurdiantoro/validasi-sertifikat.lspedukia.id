@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Student;
 
 use App\Models\PenerimaSertif;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\StudentsImport;
 use App\Http\Controllers\Controller;
 
 class SertifController extends Controller
@@ -19,6 +21,30 @@ class SertifController extends Controller
         return inertia('Student/Login/Index', [
             'penerimasertifs' => $penerimasertifs,
         ]);
+    }
+
+    public function import()
+    {
+        return inertia('Student/Login/Import');
+    }
+    
+    /**
+     * storeImport
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function storeImport(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+
+        // import data
+        Excel::import(new StudentsImport(), $request->file('file'));
+
+        //redirect
+        return redirect()->route('index')->with('success', 'Data berhasil diimport.');
     }
 
     public function show($no_sertif)
