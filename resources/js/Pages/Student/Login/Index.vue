@@ -9,7 +9,13 @@
                     <div class="col-md-8 col-12 mb-2">
                         <form @submit.prevent="handleSearch">
                             <div class="input-group">
-                                <input type="text" class="form-control border-0 shadow" v-model="search" placeholder="masukkan kata kunci dan enter...">
+                                <input
+                                    type="text"
+                                    class="form-control border-0 shadow"
+                                    v-model="search"
+                                    placeholder="masukkan kata kunci dan enter..."
+                                    aria-label="Cari penerima sertifikat"
+                                />
                                 <span class="input-group-text border-0 shadow">
                                     <i class="fa fa-search"></i>
                                 </span>
@@ -19,6 +25,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row mt-1">
             <div class="col-md-12">
                 <div class="card border-0 shadow">
@@ -35,17 +42,25 @@
                                         <th class="border-0 rounded-end">Status Sertifikat</th>
                                     </tr>
                                 </thead>
-                                <div class="mt-2"></div>
                                 <tbody>
-                                    <tr v-for="(penerimasertif, index) in penerimasertifs.data" :key="index">
-                                        
-                                        <td class="fw-bold text-center">{{ ++index + (penerimasertifs.current_page - 1) * penerimasertifs.per_page }}</td>
+                                    <tr
+                                        v-for="(penerimasertif, index) in penerimasertifs.data"
+                                        :key="penerimasertif.id"
+                                    >
+                                        <td class="fw-bold text-center">
+                                            {{ ++index + (penerimasertifs.current_page - 1) * penerimasertifs.per_page }}
+                                        </td>
                                         <td>{{ penerimasertif.nama_lengkap }}</td>
                                         <td>{{ penerimasertif.skema }}</td>
                                         <td>{{ penerimasertif.no_sertif }}</td>
                                         <td>{{ penerimasertif.tgl_rilis }}</td>
-                                        <td v-if="penerimasertif.tgl_rilis < penerimasertif.tgl_berakhir">Aktif</td>
-                                        <td v-else>Expired</td>
+                                        <td>
+                                            {{
+                                                new Date(penerimasertif.tgl_rilis) < new Date(penerimasertif.tgl_berakhir)
+                                                    ? 'Aktif'
+                                                    : 'Expired'
+                                            }}
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -59,67 +74,38 @@
 </template>
 
 <script>
-    //import layout
-    import LayoutStudent from '../../../Layouts/Student.vue';
+import LayoutStudent from '../../../Layouts/Student.vue';
+import Pagination from '../../../Components/Pagination.vue';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
-    //import component pagination
-    import Pagination from '../../../Components/Pagination.vue';
-
-    //import Heade and Link from Inertia
-    import {
+export default {
+    layout: LayoutStudent,
+    components: {
         Head,
         Link,
-        router
-    } from '@inertiajs/vue3';
+        Pagination,
+    },
+    props: {
+        penerimasertifs: Object,
+    },
+    setup() {
+        const search = ref((new URL(document.location)).searchParams.get('q') || '');
 
-    //import ref from vue
-    import {
-        ref
-    } from 'vue';
+        const handleSearch = () => {
+            router.get('/', {
+                q: search.value,
+            });
+        };
 
-    export default {
-        //layout
-        layout: LayoutStudent,
-
-        //register component
-        components: {
-            Head,
-            Link,
-            Pagination
-        },
-
-        //props
-        props: {
-            penerimasertifs: Object,
-        },
-
-        //inisialisasi composition API
-        setup() {
-
-            //define state search
-            const search = ref('' || (new URL(document.location)).searchParams.get('q'));
-
-            //define method search
-            const handleSearch = () => {
-                router.get('/', {
-
-                    //send params "q" with value from state "search"
-                    q: search.value,
-                });
-            }
-
-            //return
-            return {
-                search,
-                handleSearch,
-            }
-
-        }
-    }
-
+        return {
+            search,
+            handleSearch,
+        };
+    },
+};
 </script>
 
-
-<style>
-
+<style scoped>
+/* Add custom styles here if needed */
 </style>
