@@ -12,9 +12,9 @@ class SertifController extends Controller
 {
     public function index()
     {
-        $penerimasertifs = PenerimaSertif::when(request()->q, function($penerimasertifs) {
-            $penerimasertifs = $penerimasertifs->where('nama_lengkap', 'like', '%'. request()->q . '%');
-        })->latest()->paginate(10);
+        $penerimasertifs = PenerimaSertif::when(request()->q, function($query) {
+            $query->where('nama_lengkap', 'like', '%' . request()->q . '%');
+        })->orderBy('id', 'desc')->paginate(10);
 
         $penerimasertifs->appends(['q' => request()->q]);
 
@@ -22,6 +22,7 @@ class SertifController extends Controller
             'penerimasertifs' => $penerimasertifs,
         ]);
     }
+
 
     public function import()
     {
