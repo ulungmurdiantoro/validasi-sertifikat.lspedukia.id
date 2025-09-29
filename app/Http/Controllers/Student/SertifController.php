@@ -14,7 +14,7 @@ class SertifController extends Controller
     {
         $penerimasertifs = PenerimaSertif::when(request()->q, function($query) {
             $query->where('nama_lengkap', 'like', '%' . request()->q . '%');
-        })->orderBy('id', 'desc')->paginate(10);
+        })->orderBy('id', 'asc')->paginate(10);
 
         $penerimasertifs->appends(['q' => request()->q]);
 
