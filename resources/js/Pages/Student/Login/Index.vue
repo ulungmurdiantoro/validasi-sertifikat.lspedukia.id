@@ -44,23 +44,20 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                        v-for="(penerimasertif, index) in penerimasertifs.data"
-                                        :key="penerimasertif.id"
+                                    v-for="(penerimasertif, index) in penerimasertifs.data"
+                                    :key="penerimasertif.id"
                                     >
-                                        <td class="fw-bold text-center">
-                                            {{ ++index + (penerimasertifs.current_page - 1) * penerimasertifs.per_page }}
-                                        </td>
-                                        <td>{{ penerimasertif.nama_lengkap }}</td>
-                                        <td>{{ penerimasertif.skema }}</td>
-                                        <td>{{ penerimasertif.no_sertif }}</td>
-                                        <td>{{ penerimasertif.tgl_rilis }}</td>
-                                        <td>
-                                            {{
-                                                new Date(penerimasertif.tgl_rilis) < new Date(penerimasertif.tgl_berakhir)
-                                                    ? 'Aktif'
-                                                    : 'Expired'
-                                            }}
-                                        </td>
+                                    <td class="fw-bold text-center">
+                                        {{ ++index + (penerimasertifs.current_page - 1) * penerimasertifs.per_page }}
+                                    </td>
+                                    <td>{{ penerimasertif.nama_lengkap }}</td>
+                                    <td>{{ penerimasertif.skema }}</td>
+                                    <td>{{ penerimasertif.no_sertif }}</td>
+                                    <td>{{ penerimasertif.tgl_rilis }}</td>
+
+                                    <td>
+                                        {{ getSertifStatus(penerimasertif.tgl_berakhir) }}
+                                    </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -80,32 +77,58 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 export default {
-    layout: LayoutStudent,
-    components: {
-        Head,
-        Link,
-        Pagination,
-    },
-    props: {
-        penerimasertifs: Object,
-    },
-    setup() {
-        const search = ref((new URL(document.location)).searchParams.get('q') || '');
+  layout: LayoutStudent,
+  components: { Head, Link, Pagination },
+  props: { penerimasertifs: Object },
 
-        const handleSearch = () => {
-            router.get('/', {
-                q: search.value,
-            });
-        };
+  setup() {
+    const search = ref(new URL(document.location).searchParams.get('q') || '');
 
-        return {
-            search,
-            handleSearch,
-        };
-    },
+    const handleSearch = () => {
+      router.get('/', { q: search.value });
+    };
+
+    // Parse aman untuk string tanggal dari DB (varchar)
+    // Support: "YYYY-MM-DD", "DD-MM-YYYY", "YYYY/MM/DD", "DD/MM/YYYY"
+    const parseDateEndOfDay = (raw) => {
+      if (!raw || typeof raw !== 'string') return null;
+
+      const s = raw.trim();
+      const parts = s.includes('-') ? s.split('-') : (s.includes('/') ? s.split('/') : null);
+      if (!parts || parts.length < 3) return null;
+
+      let y, m, d;
+
+      // detect format
+      // if first chunk is 4 digits => YYYY-MM-DD
+      if (parts[0].length === 4) {
+        y = parts[0];
+        m = parts[1];
+        d = parts[2];
+      } else {
+        // assume DD-MM-YYYY
+        d = parts[0];
+        m = parts[1];
+        y = parts[2];
+      }
+
+      // Normalisasi ke akhir hari lokal supaya masih "Aktif" sepanjang tanggal berakhir
+      const dt = new Date(`${y}-${m}-${d}T23:59:59`);
+      return Number.isNaN(dt.getTime()) ? null : dt;
+    };
+
+    const getSertifStatus = (tgl_berakhir) => {
+      const expiredAt = parseDateEndOfDay(tgl_berakhir);
+      if (!expiredAt) return '-'; // atau 'Tanggal tidak valid'
+
+      return expiredAt >= new Date() ? 'Aktif' : 'Expired';
+    };
+
+    return {
+      search,
+      handleSearch,
+      getSertifStatus,
+    };
+  },
 };
 </script>
-
-<style scoped>
-/* Add custom styles here if needed */
-</style>
