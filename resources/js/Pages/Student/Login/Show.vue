@@ -28,26 +28,28 @@
                   </tr>
                   <tr>
                     <th>Tanggal Sertifikat</th>
-                    <td>{{ penerimasertif.tgl_rilis }}</td>
+                      <td>{{ formatTanggal(penerimasertif.tgl_rilis) }}</td>
                   </tr>
                   <tr>
                     <th>Berlaku sampai</th>
-                    <td>{{ penerimasertif.tgl_berakhir }}</td>
+                    <td>{{ formatTanggal(penerimasertif.tgl_berakhir) }}</td>
                   </tr>
-                  <!-- <tr>
-                    <th>Instansi / Perguruan Tinggi</th>
-                    <td>{{ penerimasertif.instansi }}</td>
-                  </tr> -->
                   <tr>
                     <th>Status Sertifikat</th>
                     <td>
                       <span
                         :class="{
-                          'text-success': penerimasertif.tgl_rilis < penerimasertif.tgl_berakhir,
-                          'text-danger': !(penerimasertif.tgl_rilis < penerimasertif.tgl_berakhir)
+                          'text-success': new Date(penerimasertif.tgl_berakhir) >= new Date(),
+                          'text-danger': new Date(penerimasertif.tgl_berakhir) < new Date()
                         }"
                       >
-                        <b>{{ penerimasertif.tgl_rilis < penerimasertif.tgl_berakhir ? 'AKTIF' : 'EXPIRED' }}</b>
+                        <b>
+                          {{
+                            new Date(penerimasertif.tgl_berakhir) >= new Date()
+                              ? 'AKTIF'
+                              : 'EXPIRED'
+                          }}
+                        </b>
                       </span>
                     </td>
                   </tr>
@@ -75,6 +77,19 @@ export default {
       default: null,
     },
   },
+  methods: {
+    formatTanggal(tanggal) {
+      if (!tanggal) return '-';
+
+      const date = new Date(tanggal);
+
+      return date.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+  }
 };
 </script>
 
