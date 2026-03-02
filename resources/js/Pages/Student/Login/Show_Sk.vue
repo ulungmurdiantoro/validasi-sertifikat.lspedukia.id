@@ -9,11 +9,13 @@
           Maaf, data sertifikat tidak ditemukan.
         </div>
       </template>
+
       <template v-else>
         <div class="certificate-card card shadow-sm mx-auto">
           <div class="card-header bg-primary text-white text-center">
             <h3 class="mb-0">VALIDASI DOKUMEN ELEKTRONIK</h3>
           </div>
+
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-bordered">
@@ -28,10 +30,11 @@
                   </tr>
                   <tr>
                     <th>Tanggal Dokumen</th>
-                    <td>{{ penerimask.tgl_rilis }}</td>
+                    <!-- ✅ diubah jadi format Indonesia -->
+                    <td>{{ formatTanggalIndo(penerimask.tgl_rilis) }}</td>
                   </tr>
                   <tr>
-                    <th>Proses  Pelaksanaan</th>
+                    <th>Proses Pelaksanaan</th>
                     <td>{{ penerimask.skema }} Batch {{ penerimask.batch }}</td>
                   </tr>
                   <tr>
@@ -44,7 +47,7 @@
                   </tr>
                   <tr>
                     <th>Jabatan</th>
-                    <td><b>Ketua LSP</b></td>
+                    <td><b>Ketua LSP</b></td>
                   </tr>
                 </tbody>
               </table>
@@ -70,16 +73,38 @@ export default {
       default: null,
     },
   },
+  methods: {
+    // ✅ format tanggal Indonesia: "3 Maret 2026"
+    formatTanggalIndo(raw) {
+      if (!raw) return '-';
+
+      // kalau raw sudah "YYYY-MM-DD" atau "YYYY-MM-DD HH:mm:ss"
+      // ambil 10 karakter pertama biar aman
+      const s = String(raw).trim().slice(0, 10);
+
+      // bikin Date yang aman (hindari shift timezone)
+      // contoh s = "2026-03-03"
+      const [y, m, d] = s.split('-');
+      if (!y || !m || !d) return raw;
+
+      const dt = new Date(Number(y), Number(m) - 1, Number(d));
+      if (Number.isNaN(dt.getTime())) return raw;
+
+      return dt.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    },
+  },
 };
 </script>
 
 <style scoped>
-/* Container fade-in animation */
 .container-fluid {
   animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Fade transition for view */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;
@@ -89,35 +114,30 @@ export default {
   opacity: 0;
 }
 
-/* Card styling with increased width */
 .certificate-card {
-  max-width: 90%; /* Increased from 600px to 800px */
+  max-width: 90%;
   margin: 0 auto;
   border: none;
   border-radius: 10px;
   overflow: hidden;
 }
 
-/* Card Header styling */
 .certificate-card .card-header {
   background-color: #007bff;
   padding: 1rem;
 }
 
-/* Card Body styling */
 .certificate-card .card-body {
   padding: 2rem;
   background-color: #f8f9fa;
 }
 
-/* Error state styling with shake animation */
 .error-state {
-  max-width: 800px; /* Matching the container width */
+  max-width: 800px;
   margin: 20px auto;
   animation: shake 0.5s;
 }
 
-/* Fade-in keyframe animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -129,7 +149,6 @@ export default {
   }
 }
 
-/* Shake keyframe animation for error state */
 @keyframes shake {
   0% { transform: translateX(0); }
   25% { transform: translateX(-10px); }

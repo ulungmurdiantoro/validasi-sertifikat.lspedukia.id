@@ -44,20 +44,22 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                    v-for="(penerimasertif, index) in penerimasertifs.data"
-                                    :key="penerimasertif.id"
+                                        v-for="(penerimasertif, index) in penerimasertifs.data"
+                                        :key="penerimasertif.id"
                                     >
-                                    <td class="fw-bold text-center">
-                                        {{ ++index + (penerimasertifs.current_page - 1) * penerimasertifs.per_page }}
-                                    </td>
-                                    <td>{{ penerimasertif.nama_lengkap }}</td>
-                                    <td>{{ penerimasertif.skema }}</td>
-                                    <td>{{ penerimasertif.no_sertif }}</td>
-                                    <td>{{ penerimasertif.tgl_rilis }}</td>
+                                        <td class="fw-bold text-center">
+                                            {{ ++index + (penerimasertifs.current_page - 1) * penerimasertifs.per_page }}
+                                        </td>
+                                        <td>{{ penerimasertif.nama_lengkap }}</td>
+                                        <td>{{ penerimasertif.skema }}</td>
+                                        <td>{{ penerimasertif.no_sertif }}</td>
 
-                                    <td>
-                                        {{ getSertifStatus(penerimasertif.tgl_berakhir) }}
-                                    </td>
+                                        <!-- ✅ tanggal dibuat format Indonesia -->
+                                        <td>{{ formatTanggalIndo(penerimasertif.tgl_rilis) }}</td>
+
+                                        <td>
+                                            {{ getSertifStatus(penerimasertif.tgl_berakhir) }}
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -90,8 +92,19 @@ export default {
 
     // Parse aman untuk string tanggal dari DB (varchar)
     // Support: "YYYY-MM-DD", "DD-MM-YYYY", "YYYY/MM/DD", "DD/MM/YYYY"
-    const parseDateEndOfDay = (raw) => {
-      if (!raw || typeof raw !== 'string') return null;
+    const parseDate = (raw) => {
+      if (!raw) return null;
+
+      // Jika sudah Date object
+      if (raw instanceof Date) return raw;
+
+      // Jika numeric (serial excel) - optional, tapi aman kalau sewaktu-waktu datang
+      if (typeof raw === 'number') {
+        const dt = new Date(Math.round((raw - 25569) * 86400 * 1000));
+        return Number.isNaN(dt.getTime()) ? null : dt;
+      }
+
+      if (typeof raw !== 'string') return null;
 
       const s = raw.trim();
       const parts = s.includes('-') ? s.split('-') : (s.includes('/') ? s.split('/') : null);
@@ -99,27 +112,50 @@ export default {
 
       let y, m, d;
 
-      // detect format
-      // if first chunk is 4 digits => YYYY-MM-DD
+      // YYYY-MM-DD
       if (parts[0].length === 4) {
         y = parts[0];
         m = parts[1];
         d = parts[2];
       } else {
-        // assume DD-MM-YYYY
+        // DD-MM-YYYY
         d = parts[0];
         m = parts[1];
         y = parts[2];
       }
 
-      // Normalisasi ke akhir hari lokal supaya masih "Aktif" sepanjang tanggal berakhir
-      const dt = new Date(`${y}-${m}-${d}T23:59:59`);
+      const dt = new Date(`${y}-${m}-${d}T00:00:00`);
       return Number.isNaN(dt.getTime()) ? null : dt;
+    };
+
+    // ✅ format tampilan tanggal jadi Indonesia: "1 April 2024"
+    const formatTanggalIndo = (raw) => {
+      const dt = parseDate(raw);
+      if (!dt) return '-';
+
+      return dt.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    };
+
+    // Normalisasi ke akhir hari lokal supaya masih "Aktif" sepanjang tanggal berakhir
+    const parseDateEndOfDay = (raw) => {
+      const dt = parseDate(raw);
+      if (!dt) return null;
+
+      return new Date(
+        dt.getFullYear(),
+        dt.getMonth(),
+        dt.getDate(),
+        23, 59, 59
+      );
     };
 
     const getSertifStatus = (tgl_berakhir) => {
       const expiredAt = parseDateEndOfDay(tgl_berakhir);
-      if (!expiredAt) return '-'; // atau 'Tanggal tidak valid'
+      if (!expiredAt) return '-';
 
       return expiredAt >= new Date() ? 'Aktif' : 'Expired';
     };
@@ -128,6 +164,7 @@ export default {
       search,
       handleSearch,
       getSertifStatus,
+      formatTanggalIndo,
     };
   },
 };
