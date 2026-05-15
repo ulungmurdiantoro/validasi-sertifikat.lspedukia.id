@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Student;
 
-use App\Models\PenerimaSertif;
+use App\Models\PenerimaSertifV4 as PenerimaSertif;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\StudentsImport;

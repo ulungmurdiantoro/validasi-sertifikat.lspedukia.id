@@ -9,7 +9,7 @@ class SertifikatController extends Controller
 {
     public function index()
     {
-        $data = DB::table('penerima_sertifs')
+        $data = DB::table('penerima_sertifs_v4')
             ->orderBy('no_skema','ASC')
             ->get();
 
